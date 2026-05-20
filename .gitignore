@@ -1,0 +1,7 @@
+.env
+qdrant_storage/
+ingest/data/raw/
+models/ 
+.cache/huggingface/
+__pycache__/ 
+.venv/
