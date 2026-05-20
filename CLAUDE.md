@@ -57,10 +57,6 @@ owasp-rag-mcp/
 │   └── data/
 │       └── sources.yml             # 取得元 URL・バージョン定義
 │
-├── shared/                         # 全サービス共通
-│   ├── models.py
-│   └── constants.py
-│
 ├── .github/
 │   └── workflows/
 │       ├── ci.yml                  # lint + test（push / PR 時）
