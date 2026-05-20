@@ -171,16 +171,16 @@ parser
     │ ③ 要件単位のレコードに正規化
     │
     ├─ ASVS: flat.json をそのまま読み込み
-    │   id / level / category / description フィールドを抽出
+    │   req_id / level / chapter_id / section_id / description フィールドを抽出
     │
     └─ AISVS: Markdown をパース
-        章・カテゴリ・要件 ID・レベルを抽出して構造化
+        章・セクション・要件 ID・レベルを抽出して構造化
     │
     ▼
 chunker
     │
     │ ④ 要件 1 件 = 1 チャンク に分割
-    │   メタデータ（id / standard / level / category）を付与
+    │   メタデータ（req_id / standard / level / chapter_id / section_id）を付与
     ▼
 embedder
     │
@@ -279,6 +279,7 @@ sources:
     format: markdown           # JSON が存在しないため Markdown をパース
     paths:
       - 1.0/en/
+    path_pattern: "0x10-C*.md"
   # 将来追加例
   # - standard: MASVS
   #   version: "2.0"

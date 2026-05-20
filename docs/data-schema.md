@@ -310,17 +310,22 @@ embedding_input = "passage: {req_id}: {description}"
 
 ```json
 {
-  "standard": "ASVS",
-  "version": "5.0.0",
-  "chapters": [
+  "standards": [
     {
-      "chapter_id": "V1",
-      "chapter_name": "Encoding and Sanitization",
-      "sections": [
+      "standard": "ASVS",
+      "version": "5.0.0",
+      "total_requirements": 345,
+      "chapters": [
         {
-          "section_id": "V1.1",
-          "section_name": "Encoding and Sanitization Architecture",
-          "count": 3
+          "chapter_id": "V1",
+          "chapter_name": "Encoding and Sanitization",
+          "sections": [
+            {
+              "section_id": "V1.1",
+              "section_name": "Encoding and Sanitization Architecture",
+              "count": 3
+            }
+          ]
         }
       ]
     }
@@ -332,17 +337,22 @@ embedding_input = "passage: {req_id}: {description}"
 
 ```json
 {
-  "feature": "セッション管理機能",
+  "feature": "ユーザー認証機能。パスワードと MFA を組み合わせた認証を提供する。",
   "results": [
     {
-      "req_id": "V3.1.1",
+      "req_id": "V2.1.1",
       "standard": "ASVS",
+      "version": "5.0.0",
       "level": 1,
-      "description": "Verify the application never reveals session tokens...",
-      "score": 0.891
+      "chapter_id": "V2",
+      "chapter_name": "Authentication",
+      "section_id": "V2.1",
+      "section_name": "Password Security",
+      "description": "Verify that user set passwords are at least 8 characters in length.",
+      "score": 0.881
     }
   ],
-  "total": 8
+  "total": 10
 }
 ```
 
