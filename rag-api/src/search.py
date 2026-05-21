@@ -44,14 +44,14 @@ def _search_collection(
     query_filter: Filter | None,
     top_k: int,
 ) -> list[RequirementResult]:
-    hits = client.search(
+    response = client.query_points(
         collection_name=collection_name,
-        query_vector=query_vector,
+        query=query_vector,
         query_filter=query_filter,
         limit=top_k,
         with_payload=True,
     )
-    return _hits_to_results(hits)
+    return _hits_to_results(response.points)
 
 
 def search(

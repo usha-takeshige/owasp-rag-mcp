@@ -75,7 +75,9 @@ class TestHealth:
 class TestSearch:
     def test_search_returns_results(self, client_pair):
         client, _, mock_qdrant = client_pair
-        mock_qdrant.search.return_value = [_make_hit()]
+        resp_mock = MagicMock()
+        resp_mock.points = [_make_hit()]
+        mock_qdrant.query_points.return_value = resp_mock
 
         resp = client.post("/search", json={"query": "session management", "standard": "ASVS"})
 
@@ -117,7 +119,7 @@ class TestSearch:
 
     def test_search_qdrant_error_returns_503(self, client_pair):
         client, _, mock_qdrant = client_pair
-        mock_qdrant.search.side_effect = ConnectionError("Qdrant down")
+        mock_qdrant.query_points.side_effect = ConnectionError("Qdrant down")
 
         resp = client.post("/search", json={"query": "test", "standard": "ASVS"})
 

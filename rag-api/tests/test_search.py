@@ -38,6 +38,12 @@ class TestBuildFilter:
         assert f.must[0].match.value == 2
 
 
+def _make_query_response(hits: list) -> MagicMock:
+    resp = MagicMock()
+    resp.points = hits
+    return resp
+
+
 class TestSearch:
     def _make_embedder(self) -> MagicMock:
         embedder = MagicMock()
@@ -46,13 +52,15 @@ class TestSearch:
 
     def test_search_single_standard(self):
         client = MagicMock()
-        client.search.return_value = [_make_hit(_sample_payload(), score=0.9)]
+        client.query_points.return_value = _make_query_response(
+            [_make_hit(_sample_payload(), score=0.9)]
+        )
         embedder = self._make_embedder()
 
         result = search(client, embedder, "query", standard="ASVS", level=None, top_k=5)
 
-        client.search.assert_called_once()
-        call_kwargs = client.search.call_args.kwargs
+        client.query_points.assert_called_once()
+        call_kwargs = client.query_points.call_args.kwargs
         assert call_kwargs["collection_name"] == "asvs_requirements"
         assert result.total == 1
         assert result.query == "query"
@@ -60,7 +68,7 @@ class TestSearch:
 
     def test_search_uses_query_prefix(self):
         client = MagicMock()
-        client.search.return_value = []
+        client.query_points.return_value = _make_query_response([])
         embedder = self._make_embedder()
 
         search(client, embedder, "test query", standard="ASVS", level=None, top_k=5)
@@ -72,16 +80,20 @@ class TestSearch:
 
         def side_effect(**kwargs):
             if kwargs["collection_name"] == "asvs_requirements":
-                return [_make_hit(_sample_payload("V1.1.1", "ASVS"), score=0.8)]
+                return _make_query_response(
+                    [_make_hit(_sample_payload("V1.1.1", "ASVS"), score=0.8)]
+                )
             else:
-                return [_make_hit(_sample_payload("C1.1.1", "AISVS"), score=0.95)]
+                return _make_query_response(
+                    [_make_hit(_sample_payload("C1.1.1", "AISVS"), score=0.95)]
+                )
 
-        client.search.side_effect = side_effect
+        client.query_points.side_effect = side_effect
         embedder = self._make_embedder()
 
         result = search(client, embedder, "query", standard=None, level=None, top_k=5)
 
-        assert client.search.call_count == 2
+        assert client.query_points.call_count == 2
         assert result.total == 2
         assert result.results[0].score == 0.95
         assert result.results[1].score == 0.8
@@ -90,12 +102,12 @@ class TestSearch:
         client = MagicMock()
 
         def side_effect(**kwargs):
-            return [
+            return _make_query_response([
                 _make_hit(_sample_payload(), score=0.9),
                 _make_hit(_sample_payload(), score=0.8),
-            ]
+            ])
 
-        client.search.side_effect = side_effect
+        client.query_points.side_effect = side_effect
         embedder = self._make_embedder()
 
         result = search(client, embedder, "query", standard=None, level=None, top_k=3)
@@ -104,12 +116,12 @@ class TestSearch:
 
     def test_search_with_level_filter(self):
         client = MagicMock()
-        client.search.return_value = []
+        client.query_points.return_value = _make_query_response([])
         embedder = self._make_embedder()
 
         search(client, embedder, "query", standard="ASVS", level=2, top_k=5)
 
-        call_kwargs = client.search.call_args.kwargs
+        call_kwargs = client.query_points.call_args.kwargs
         assert call_kwargs["query_filter"] is not None
 
 
