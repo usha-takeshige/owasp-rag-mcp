@@ -1,0 +1,15 @@
+sources:
+  - standard: ASVS
+    version: "5.0.0"
+    repo: OWASP/ASVS
+    branch: master
+    format: json_flat
+    path: 5.0/docs_en/OWASP_Application_Security_Verification_Standard_5.0.0_en.flat.json
+  - standard: AISVS
+    version: "1.0"
+    repo: OWASP/AISVS
+    branch: main
+    format: markdown
+    paths:
+      - 1.0/en/
+    path_pattern: "0x10-C*.md"
