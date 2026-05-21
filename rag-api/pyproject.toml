@@ -10,6 +10,9 @@ dependencies = [
     "httpx",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
