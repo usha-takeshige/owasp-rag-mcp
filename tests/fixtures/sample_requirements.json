@@ -1,0 +1,18 @@
+{
+  "asvs": {
+    "known_req_ids": ["V1.1.1", "V2.1.1", "V3.1.1"],
+    "known_chapters": ["V1", "V2", "V3"],
+    "nonexistent_req_id": "V9.9.9"
+  },
+  "aisvs": {
+    "known_req_ids": ["C1.1.1"],
+    "known_chapters": ["C1"],
+    "nonexistent_req_id": "C9.9.9"
+  },
+  "search_queries": {
+    "session_management": "セッション管理",
+    "input_validation": "input validation",
+    "authentication": "JWT を使ったユーザー認証",
+    "prompt_injection": "prompt injection"
+  }
+}

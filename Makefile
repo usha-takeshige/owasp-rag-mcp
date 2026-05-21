@@ -1,4 +1,4 @@
-.PHONY: up down ingest logs test lint
+.PHONY: up down ingest logs test test-integration lint
 
 up:
 	docker compose up -d
@@ -16,6 +16,9 @@ test:
 	cd mcp-server && uv run pytest tests/ -v
 	cd rag-api && uv run pytest tests/ -v
 	cd ingest && uv run pytest tests/ -v
+
+test-integration:
+	cd tests && uv run pytest integration/ -v
 
 lint:
 	cd mcp-server && uv run ruff check src/
