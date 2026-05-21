@@ -1,0 +1,54 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks:
+      - internal
+
+  rag-api:
+    build: ./rag-api
+    depends_on:
+      - qdrant
+    environment:
+      - QDRANT_HOST=${QDRANT_HOST:-qdrant}
+      - QDRANT_PORT=${QDRANT_PORT:-6333}
+      - EMBED_MODEL=${EMBED_MODEL:-intfloat/multilingual-e5-large}
+      - FALLBACK_OLLAMA_URL=${FALLBACK_OLLAMA_URL:-http://ollama:11434}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - internal
+
+  mcp-server:
+    build: ./mcp-server
+    ports:
+      - "${MCP_PORT:-8080}:8080"
+    depends_on:
+      - rag-api
+    environment:
+      - RAG_API_URL=${RAG_API_URL:-http://rag-api:8000}
+      - RAG_API_TIMEOUT=${RAG_API_TIMEOUT:-30}
+      - MCP_PORT=${MCP_PORT:-8080}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - internal
+
+  ingest:
+    build: ./ingest
+    depends_on:
+      - qdrant
+    environment:
+      - QDRANT_HOST=${QDRANT_HOST:-qdrant}
+      - QDRANT_PORT=${QDRANT_PORT:-6333}
+      - EMBED_MODEL=${EMBED_MODEL:-intfloat/multilingual-e5-large}
+      - FALLBACK_OLLAMA_URL=${FALLBACK_OLLAMA_URL:-http://ollama:11434}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    networks:
+      - internal
+
+networks:
+  internal:
+
+volumes:
+  qdrant_storage:

@@ -1,0 +1,13 @@
+services:
+  rag-api:
+    volumes:
+      - ./rag-api/src:/app/src
+
+  mcp-server:
+    volumes:
+      - ./mcp-server/src:/app/src
+
+  ingest:
+    volumes:
+      - ./ingest/src:/app/src
+      - ./ingest/data:/app/data
