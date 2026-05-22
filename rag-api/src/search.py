@@ -1,3 +1,5 @@
+from typing import Any
+
 from qdrant_client import QdrantClient
 from qdrant_client.models import FieldCondition, Filter, MatchValue
 
@@ -18,7 +20,7 @@ def build_filter(level: int | None) -> Filter | None:
     return Filter(must=[FieldCondition(key="level", match=MatchValue(value=level))])
 
 
-def _hits_to_results(hits: list) -> list[RequirementResult]:
+def _hits_to_results(hits: list[Any]) -> list[RequirementResult]:
     results = []
     for hit in hits:
         p = hit.payload
@@ -97,6 +99,7 @@ def get_requirement(
     if not points:
         return None
     p = points[0].payload
+    assert p is not None
     return RequirementDetail(
         req_id=p["req_id"],
         standard=p["standard"],
@@ -113,16 +116,16 @@ def get_requirement(
 def get_categories(
     client: QdrantClient,
     standard: str | None,
-) -> dict[str, dict]:
+) -> dict[str, Any]:
     collections = (
         {standard: COLLECTION_MAP[standard]}
         if standard is not None
         else COLLECTION_MAP
     )
 
-    standards_data: dict[str, dict] = {}
+    standards_data: dict[str, Any] = {}
     for std, collection in collections.items():
-        chapters: dict[str, dict] = {}
+        chapters: dict[str, Any] = {}
         version = ""
         offset = None
 
@@ -136,6 +139,7 @@ def get_categories(
             )
             for point in points:
                 p = point.payload
+                assert p is not None
                 if not version:
                     version = p.get("version", "")
                 ch_id = p["chapter_id"]
