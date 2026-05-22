@@ -53,20 +53,22 @@ port番号は`.env`で設定したものにしてください。
 
 Claude Desktop を再起動すると、チャット画面のツールメニューに `owasp-rag` が表示されます。
 
-#### Cursor
+#### Codex
 
-プロジェクトルートの `.cursor/mcp.json`、またはグローバル設定 `~/.cursor/mcp.json` に追加します：
+Codex CLI から以下を実行して、Streamable HTTP の MCP サーバーとして登録します：
 
-```json
-{
-  "mcpServers": {
-    "owasp-rag": {
-      "type": "http",
-      "url": "http://localhost:8080/mcp"
-    }
-  }
-}
+```bash
+codex mcp add owasp-rag --url http://localhost:8080/mcp
 ```
+
+手動で設定する場合は、`~/.codex/config.toml` に以下を追加します：
+
+```toml
+[mcp_servers.owasp-rag]
+url = "http://localhost:8080/mcp"
+```
+
+登録後、新しい Codex セッションを開始すると `owasp-rag` の MCP ツールを利用できます。
 
 ### クエリ例
 
