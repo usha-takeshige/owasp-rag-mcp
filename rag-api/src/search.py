@@ -1,8 +1,8 @@
 from typing import Any
 
-from qdrant_client import QdrantClient
 from qdrant_client.models import FieldCondition, Filter, MatchValue
 
+from qdrant_client import QdrantClient
 from src.embedder import Embedder
 from src.schemas import RequirementDetail, RequirementResult, SearchResponse
 
