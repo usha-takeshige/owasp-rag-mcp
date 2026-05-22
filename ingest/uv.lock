@@ -392,7 +392,7 @@ dependencies = [
     { name = "sentence-transformers" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "mypy" },
     { name = "pytest" },
@@ -402,14 +402,17 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "httpx" },
-    { name = "mypy", marker = "extra == 'dev'" },
-    { name = "pytest", marker = "extra == 'dev'" },
     { name = "pyyaml" },
     { name = "qdrant-client" },
-    { name = "ruff", marker = "extra == 'dev'" },
     { name = "sentence-transformers" },
 ]
-provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
 
 [[package]]
 name = "iniconfig"

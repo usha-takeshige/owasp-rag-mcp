@@ -10,7 +10,7 @@ dependencies = [
     "httpx",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = ["pytest", "httpx", "ruff", "mypy"]
 
 [tool.ruff]
