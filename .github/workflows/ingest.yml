@@ -1,0 +1,21 @@
+name: Ingest
+
+on:
+  workflow_dispatch:
+    inputs:
+      standard:
+        description: '対象標準（ASVS / AISVS / all）'
+        required: false
+        default: 'all'
+
+jobs:
+  ingest:
+    name: Run Ingest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run ingest container
+        run: docker compose run --rm ingest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
