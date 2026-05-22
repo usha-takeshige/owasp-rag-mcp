@@ -2,7 +2,7 @@
 
 OWASP ASVS（Application Security Verification Standard v5.0-RC1）および AISVS（Artificial Intelligence Security Verification Standard v1.0）を、仕様作成・開発時に手軽に参照できる**ローカル完結型 RAG システムと MCP サーバー**です。
 
-- Claude Desktop / Cursor / VS Code などの LLM クライアントから MCP ツールとして呼び出せます
+- Claude Desktop / Claude Code / Codex / Cursor / VS Code などの LLM クライアントから MCP ツールとして呼び出せます
 - 日本語クエリで英語ドキュメントを横断検索できます（クロスリンガル検索）
 - すべてのコンポーネントをローカル Docker で完結し、外部 API に依存しません
 
@@ -52,6 +52,24 @@ port番号は`.env`で設定したものにしてください。
 ```
 
 Claude Desktop を再起動すると、チャット画面のツールメニューに `owasp-rag` が表示されます。
+
+#### Claude Code
+
+Claude Code から以下を実行して、HTTP の MCP サーバーとして登録します：
+
+```bash
+claude mcp add --transport http --scope user owasp-rag http://localhost:8080/mcp
+```
+
+このプロジェクト内だけで使う場合は、`--scope user` を `--scope local` に変更してください。
+
+登録状況は以下で確認できます：
+
+```bash
+claude mcp list
+```
+
+登録後、新しい Claude Code セッションを開始すると `owasp-rag` の MCP ツールを利用できます。
 
 #### Codex
 
