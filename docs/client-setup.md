@@ -34,7 +34,7 @@
   "mcpServers": {
     "owasp-rag": {
       "type": "http",
-      "url": "http://localhost:8080"
+      "url": "http://localhost:8080/mcp"
     }
   }
 }
@@ -65,7 +65,7 @@ ASVS のセッション管理に関する要件を教えてください。
   "mcpServers": {
     "owasp-rag": {
       "type": "http",
-      "url": "http://localhost:8080"
+      "url": "http://localhost:8080/mcp"
     }
   }
 }
@@ -94,7 +94,7 @@ Cursor を再起動後、チャットで以下を入力する：
       {
         "transport": {
           "type": "http",
-          "url": "http://localhost:8080"
+          "url": "http://localhost:8080/mcp"
         }
       }
     ]
