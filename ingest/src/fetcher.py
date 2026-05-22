@@ -46,7 +46,8 @@ def _list_dir(client: httpx.Client, repo: str, path: str, branch: str) -> list[d
     url = f"{GITHUB_API}/repos/{repo}/contents/{path}"
     resp = client.get(url, params={"ref": branch}, headers=_headers())
     resp.raise_for_status()
-    return resp.json()  # type: ignore[no-any-return]
+    result: list[dict[str, str]] = resp.json()
+    return result
 
 
 def fetch(source: dict) -> list[FetchedSource]:

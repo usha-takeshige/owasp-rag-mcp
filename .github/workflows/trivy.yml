@@ -1,0 +1,68 @@
+name: Trivy SBOM & Security Scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: write  # Dependency Submission API への書き込みに必要
+
+jobs:
+  # ── CI: SBOM 生成 → 脆弱性スキャン（push / PR 時）──────────────
+  trivy-scan:
+    name: Vulnerability Scan (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [mcp-server, rag-api, ingest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate SBOM (CycloneDX)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: ${{ matrix.service }}
+          format: cyclonedx
+          output: sbom-${{ matrix.service }}.json
+
+      - name: Upload SBOM as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ matrix.service }}
+          path: sbom-${{ matrix.service }}.json
+          retention-days: 30
+
+      - name: Scan SBOM for vulnerabilities
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: sbom
+          scan-ref: sbom-${{ matrix.service }}.json
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          exit-code: '1'
+          format: table
+
+  # ── CD: Dependency Graph 登録（main push 時のみ）─────────────────
+  dependency-submission:
+    name: Dependency Graph Submission (${{ matrix.service }})
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        service: [mcp-server, rag-api, ingest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate SBOM (GitHub format) and submit to Dependency Graph
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: ${{ matrix.service }}
+          format: github
+          output: dependency-results-${{ matrix.service }}.json
+          github-pat: ${{ secrets.GITHUB_TOKEN }}

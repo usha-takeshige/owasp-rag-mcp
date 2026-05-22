@@ -1,10 +1,10 @@
+from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Annotated
 
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import JSONResponse
-from qdrant_client import QdrantClient
 
+from qdrant_client import QdrantClient
 from src.embedder import Embedder
 from src.qdrant_client import get_client
 from src.schemas import (
@@ -27,7 +27,7 @@ from src.search import (
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     app.state.embedder = Embedder()
     app.state.qdrant = get_client()
     yield
