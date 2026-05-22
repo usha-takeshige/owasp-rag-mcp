@@ -9,7 +9,7 @@ permissions:
   contents: write  # Dependency Submission API への書き込みに必要
 
 jobs:
-  # ── CI: 脆弱性スキャン（push / PR 時）────────────────────────────
+  # ── CI: SBOM 生成 → 脆弱性スキャン（push / PR 時）──────────────
   trivy-scan:
     name: Vulnerability Scan (${{ matrix.service }})
     runs-on: ubuntu-latest
@@ -20,23 +20,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Trivy vulnerability scan
-        uses: aquasecurity/trivy-action@0.28.0
-        with:
-          scan-type: fs
-          scan-ref: ${{ matrix.service }}
-          scanners: vuln
-          severity: CRITICAL,HIGH
-          exit-code: '1'
-          format: table
-
       - name: Generate SBOM (CycloneDX)
-        if: always()
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
           scan-ref: ${{ matrix.service }}
-          scanners: vuln
           format: cyclonedx
           output: sbom-${{ matrix.service }}.json
 
@@ -47,6 +35,16 @@ jobs:
           name: sbom-${{ matrix.service }}
           path: sbom-${{ matrix.service }}.json
           retention-days: 30
+
+      - name: Scan SBOM for vulnerabilities
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: sbom
+          scan-ref: sbom-${{ matrix.service }}.json
+          scanners: vuln
+          severity: CRITICAL,HIGH
+          exit-code: '1'
+          format: table
 
   # ── CD: Dependency Graph 登録（main push 時のみ）─────────────────
   dependency-submission:
